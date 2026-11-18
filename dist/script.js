@@ -1,8 +1,11 @@
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const finePointer = matchMedia('(pointer: fine)').matches;
+const mobileViewport = matchMedia('(max-width: 760px)');
 const header = document.querySelector('[data-header]');
 
-document.querySelector('[data-year]').textContent = new Date().getFullYear();
+document.querySelectorAll('[data-year]').forEach((item) => {
+  item.textContent = new Date().getFullYear();
+});
 
 const reveal = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
@@ -11,20 +14,36 @@ const reveal = new IntersectionObserver((entries) => {
       reveal.unobserve(entry.target);
     }
   });
-}, { threshold: 0.12, rootMargin: '0px 0px -7% 0px' });
+}, { threshold: 0.1, rootMargin: '0px 0px -6% 0px' });
 
-document.querySelectorAll('.reveal').forEach((element) => reveal.observe(element));
+document.querySelectorAll('.reveal').forEach((element, index) => {
+  element.style.transitionDelay = `${Math.min((index % 4) * 70, 210)}ms`;
+  reveal.observe(element);
+});
 
 let scrollTicking = false;
 const updateScrollMotion = () => {
   const y = window.scrollY;
-  header.classList.toggle('scrolled', y > 24);
-  document.querySelectorAll('.gravity-item').forEach((item) => {
-    const rect = item.getBoundingClientRect();
-    const center = rect.top + rect.height / 2 - innerHeight / 2;
-    const shift = Math.max(-18, Math.min(18, center * -0.035));
-    item.style.setProperty('--scroll-shift', `${shift}px`);
-  });
+  header?.classList.toggle('scrolled', y > 24);
+
+  if (!reducedMotion) {
+    const gravityLimit = mobileViewport.matches ? 24 : 34;
+    document.querySelectorAll('.gravity-item').forEach((item) => {
+      const rect = item.getBoundingClientRect();
+      const center = rect.top + rect.height / 2 - innerHeight / 2;
+      const shift = Math.max(-gravityLimit, Math.min(gravityLimit, center * -0.05));
+      item.style.setProperty('--scroll-shift', `${shift}px`);
+    });
+
+    document.querySelectorAll('.motion-layer').forEach((layer) => {
+      const rect = layer.parentElement.getBoundingClientRect();
+      const speed = Number(layer.dataset.motionSpeed || 0.04);
+      const center = rect.top + rect.height / 2 - innerHeight / 2;
+      const limit = mobileViewport.matches ? 38 : 78;
+      const shift = Math.max(-limit, Math.min(limit, center * speed));
+      layer.style.setProperty('--motion-y', `${shift}px`);
+    });
+  }
   scrollTicking = false;
 };
 
@@ -36,21 +55,84 @@ addEventListener('scroll', () => {
 }, { passive: true });
 
 if (!reducedMotion && finePointer) {
-  const scene = document.querySelector('[data-gravity-scene]');
-  let pointerFrame = 0;
-  scene.addEventListener('pointermove', (event) => {
-    cancelAnimationFrame(pointerFrame);
-    pointerFrame = requestAnimationFrame(() => {
-      const rect = scene.getBoundingClientRect();
-      const x = ((event.clientX - rect.left) / rect.width - .5) * 14;
-      const y = ((event.clientY - rect.top) / rect.height - .5) * 14;
-      scene.style.setProperty('--gx', `${x}px`);
-      scene.style.setProperty('--gy', `${y}px`);
+  document.querySelectorAll('[data-gravity-scene]').forEach((scene) => {
+    let pointerFrame = 0;
+    scene.addEventListener('pointermove', (event) => {
+      cancelAnimationFrame(pointerFrame);
+      pointerFrame = requestAnimationFrame(() => {
+        const rect = scene.getBoundingClientRect();
+        const x = ((event.clientX - rect.left) / rect.width - .5) * 18;
+        const y = ((event.clientY - rect.top) / rect.height - .5) * 18;
+        scene.style.setProperty('--gx', `${x}px`);
+        scene.style.setProperty('--gy', `${y}px`);
+      });
+    }, { passive: true });
+    scene.addEventListener('pointerleave', () => {
+      scene.style.setProperty('--gx', '0px');
+      scene.style.setProperty('--gy', '0px');
     });
-  }, { passive: true });
-  scene.addEventListener('pointerleave', () => {
-    scene.style.setProperty('--gx', '0px');
-    scene.style.setProperty('--gy', '0px');
+  });
+
+  document.querySelectorAll('.tilt-card, .product-card').forEach((card) => {
+    card.addEventListener('pointermove', (event) => {
+      const rect = card.getBoundingClientRect();
+      const rx = ((event.clientY - rect.top) / rect.height - .5) * -5;
+      const ry = ((event.clientX - rect.left) / rect.width - .5) * 5;
+      card.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px)`;
+    }, { passive: true });
+    card.addEventListener('pointerleave', () => {
+      card.style.transform = '';
+    });
+  });
+
+  document.querySelectorAll('.magnetic').forEach((button) => {
+    button.addEventListener('pointermove', (event) => {
+      const rect = button.getBoundingClientRect();
+      const x = (event.clientX - rect.left - rect.width / 2) * .12;
+      const y = (event.clientY - rect.top - rect.height / 2) * .12;
+      button.style.transform = `translate3d(${x}px,${y}px,0)`;
+    }, { passive: true });
+    button.addEventListener('pointerleave', () => {
+      button.style.transform = '';
+    });
+  });
+}
+
+const filterButtons = document.querySelectorAll('[data-catalog-filter]');
+const catalogItems = document.querySelectorAll('[data-catalog-item]');
+filterButtons.forEach((button) => {
+  button.addEventListener('click', () => {
+    const filter = button.dataset.catalogFilter;
+    filterButtons.forEach((item) => item.classList.toggle('active', item === button));
+    catalogItems.forEach((item) => {
+      const visible = filter === 'todos' || item.dataset.catalogItem === filter;
+      item.classList.toggle('is-filtered', !visible);
+      if (visible) item.animate([{ opacity: 0, transform: 'translateY(18px)' }, { opacity: 1, transform: 'none' }], { duration: 350, easing: 'cubic-bezier(.2,.7,.2,1)' });
+    });
+  });
+});
+
+const dialog = document.querySelector('[data-product-dialog]');
+if (dialog) {
+  const dialogImage = dialog.querySelector('[data-dialog-image]');
+  const dialogName = dialog.querySelector('[data-dialog-name]');
+  const dialogDescription = dialog.querySelector('[data-dialog-description]');
+  const dialogWhatsApp = dialog.querySelector('[data-dialog-whatsapp]');
+  document.querySelectorAll('[data-product-open]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const product = button.closest('[data-product-name]');
+      dialogImage.src = product.dataset.productImage;
+      dialogImage.alt = product.dataset.productName;
+      dialogName.textContent = product.dataset.productName;
+      dialogDescription.textContent = product.dataset.productDescription;
+      const message = `Olá, vi ${product.dataset.productName} no catálogo Aeroboy e quero consultar cores, tamanhos e valores.`;
+      dialogWhatsApp.href = `https://wa.me/5585985009803?text=${encodeURIComponent(message)}`;
+      dialog.showModal();
+    });
+  });
+  dialog.querySelector('[data-dialog-close]').addEventListener('click', () => dialog.close());
+  dialog.addEventListener('click', (event) => {
+    if (event.target === dialog) dialog.close();
   });
 }
 
