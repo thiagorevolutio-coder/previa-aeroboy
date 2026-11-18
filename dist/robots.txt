@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://aeroboy-moda-masculina.thiago-09.chatgpt.site/sitemap.xml
