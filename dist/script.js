@@ -153,7 +153,25 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   carousel.querySelector('[data-carousel-prev]')?.addEventListener('click', () => track.scrollBy({ left: -step(), behavior: 'smooth' }));
   carousel.querySelector('[data-carousel-next]')?.addEventListener('click', () => track.scrollBy({ left: step(), behavior: 'smooth' }));
   track.addEventListener('scroll', () => requestAnimationFrame(updateProgress), { passive: true });
+  let carouselTimer;
+  const stopAutoplay = () => clearInterval(carouselTimer);
+  const startAutoplay = () => {
+    stopAutoplay();
+    if (reducedMotion) return;
+    carouselTimer = setInterval(() => {
+      const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 12;
+      track.scrollTo({ left: atEnd ? 0 : track.scrollLeft + step(), behavior: 'smooth' });
+    }, 4200);
+  };
+  carousel.addEventListener('pointerenter', stopAutoplay);
+  carousel.addEventListener('pointerleave', startAutoplay);
+  carousel.addEventListener('focusin', stopAutoplay);
+  carousel.addEventListener('focusout', startAutoplay);
+  carousel.addEventListener('touchstart', stopAutoplay, { passive: true });
+  carousel.addEventListener('touchend', startAutoplay, { passive: true });
+  document.addEventListener('visibilitychange', () => document.hidden ? stopAutoplay() : startAutoplay());
   updateProgress();
+  startAutoplay();
 });
 
 updateScrollMotion();
