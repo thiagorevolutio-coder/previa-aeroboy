@@ -3,6 +3,11 @@ const finePointer = matchMedia('(pointer: fine)').matches;
 const mobileViewport = matchMedia('(max-width: 760px)');
 const header = document.querySelector('[data-header]');
 
+document.querySelectorAll('a[href^="https://wa.me/"]').forEach((link) => {
+  link.href = 'https://bio.site/vistoaeroboy';
+  link.setAttribute('aria-label', 'Escolher uma unidade Aeroboy para atendimento');
+});
+
 document.querySelectorAll('[data-year]').forEach((item) => {
   item.textContent = new Date().getFullYear();
 });
@@ -125,8 +130,7 @@ if (dialog) {
       dialogImage.alt = product.dataset.productName;
       dialogName.textContent = product.dataset.productName;
       dialogDescription.textContent = product.dataset.productDescription;
-      const message = `Olá, vi ${product.dataset.productName} no catálogo Aeroboy e quero consultar cores, tamanhos e valores.`;
-      dialogWhatsApp.href = `https://wa.me/5585985009803?text=${encodeURIComponent(message)}`;
+      dialogWhatsApp.href = 'https://bio.site/vistoaeroboy';
       dialog.showModal();
     });
   });
@@ -135,5 +139,21 @@ if (dialog) {
     if (event.target === dialog) dialog.close();
   });
 }
+
+document.querySelectorAll('[data-carousel]').forEach((carousel) => {
+  const track = carousel.querySelector('[data-carousel-track]');
+  const slides = [...track.querySelectorAll('.carousel-slide')];
+  const progress = carousel.querySelector('[data-carousel-progress]');
+  const step = () => (slides[0]?.getBoundingClientRect().width || track.clientWidth) + 16;
+  const updateProgress = () => {
+    const max = Math.max(1, track.scrollWidth - track.clientWidth);
+    const ratio = Math.min(1, track.scrollLeft / max);
+    progress.style.transform = `translateX(${ratio * 300}%)`;
+  };
+  carousel.querySelector('[data-carousel-prev]')?.addEventListener('click', () => track.scrollBy({ left: -step(), behavior: 'smooth' }));
+  carousel.querySelector('[data-carousel-next]')?.addEventListener('click', () => track.scrollBy({ left: step(), behavior: 'smooth' }));
+  track.addEventListener('scroll', () => requestAnimationFrame(updateProgress), { passive: true });
+  updateProgress();
+});
 
 updateScrollMotion();
