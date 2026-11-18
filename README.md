@@ -4,7 +4,7 @@ Site institucional e catálogo digital da Aeroboy, com foco em SEO local, experi
 
 ## Site publicado
 
-[Abrir o site Aeroboy](https://aeroboy-moda-masculina.thiago-09.chatgpt.site)
+[Abrir o site Aeroboy no GitHub Pages](https://thiagorevolutio-coder.github.io/previa-aeroboy/)
 
 ## Recursos
 
