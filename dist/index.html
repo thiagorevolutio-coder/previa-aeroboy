@@ -77,13 +77,18 @@
 
   <main id="conteudo">
     <section class="hero retail-hero" id="inicio">
-      <div class="hero-campaign-media" aria-hidden="true">
-        <video autoplay muted loop playsinline preload="metadata" poster="assets/moda-esportiva.jpg">
-          <source src="assets/aeroboy-planalto.mp4" type="video/mp4">
-        </video>
+      <div class="hero-campaign-media" data-hero-carousel aria-hidden="true">
+        <div class="hero-media-slide is-active" data-hero-slide>
+          <video autoplay muted loop playsinline preload="metadata" poster="assets/moda-esportiva.jpg">
+            <source src="assets/aeroboy-planalto.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="hero-media-slide" data-hero-slide><img src="assets/camiseta-novidade.jpg" alt="" width="512" height="640"></div>
+        <div class="hero-media-slide" data-hero-slide><img src="assets/camisas.jpg" alt="" width="480" height="640"></div>
       </div>
       <div class="hero-shade" aria-hidden="true"></div>
       <div class="hero-glow" aria-hidden="true"></div>
+      <div class="hero-carousel-status" data-hero-dots aria-label="Campanhas em destaque"></div>
       <div class="hero-copy reveal">
         <p class="eyebrow"><span></span> Nova coleção Aeroboy</p>
         <h1>Loja de roupas masculinas <em>em Fortaleza.</em></h1>

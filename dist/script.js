@@ -3,6 +3,17 @@ const finePointer = matchMedia('(pointer: fine)').matches;
 const mobileViewport = matchMedia('(max-width: 760px)');
 const header = document.querySelector('[data-header]');
 const mobileGravityMedia = [...document.querySelectorAll('.promotion-banner > img, .carousel-slide img, .brand-photo video, .location-visual img')];
+const gravitySections = [...document.querySelectorAll('main > section:not(.hero):not(.ticker)')];
+
+gravitySections.forEach((section) => {
+  section.classList.add('gravity-section');
+  ['a', 'b'].forEach((variant) => {
+    const orb = document.createElement('span');
+    orb.className = `gravity-orb gravity-orb-${variant}`;
+    orb.setAttribute('aria-hidden', 'true');
+    section.append(orb);
+  });
+});
 
 document.querySelectorAll('a[href^="https://wa.me/"]').forEach((link) => {
   link.href = 'https://bio.site/vistoaeroboy';
@@ -48,6 +59,23 @@ const updateScrollMotion = () => {
       const limit = mobileViewport.matches ? 38 : 78;
       const shift = Math.max(-limit, Math.min(limit, center * speed));
       layer.style.setProperty('--motion-y', `${shift}px`);
+    });
+
+    gravitySections.forEach((section, index) => {
+      const rect = section.getBoundingClientRect();
+      if (rect.bottom < -160 || rect.top > innerHeight + 160) return;
+      const center = rect.top + rect.height / 2 - innerHeight / 2;
+      const limit = mobileViewport.matches ? 28 : 48;
+      const shift = Math.max(-limit, Math.min(limit, center * -0.055));
+      const horizontal = Math.sin((y + index * 190) * 0.003) * (mobileViewport.matches ? 10 : 18);
+      const rotate = shift * 0.08;
+      section.style.setProperty('--section-y', `${shift}px`);
+      section.style.setProperty('--section-y-neg', `${shift * -0.7}px`);
+      section.style.setProperty('--section-x', `${horizontal}px`);
+      section.style.setProperty('--section-x-neg', `${-horizontal}px`);
+      section.style.setProperty('--section-rotate', `${rotate}deg`);
+      section.style.setProperty('--section-rotate-neg', `${-rotate}deg`);
+      section.style.setProperty('--content-gravity-y', `${shift * 0.16}px`);
     });
 
     if (mobileViewport.matches) {
@@ -173,7 +201,7 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
     carouselTimer = setInterval(() => {
       const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 12;
       track.scrollTo({ left: atEnd ? 0 : track.scrollLeft + step(), behavior: 'smooth' });
-    }, 4200);
+    }, 3800);
   };
   carousel.addEventListener('pointerenter', stopAutoplay);
   carousel.addEventListener('pointerleave', startAutoplay);
@@ -220,7 +248,7 @@ document.querySelectorAll('[data-promo-carousel]').forEach((carousel) => {
   const stop = () => clearInterval(autoplay);
   const start = () => {
     stop();
-    if (!reducedMotion) autoplay = setInterval(() => showSlide(activeIndex + 1, 1), 5600);
+    if (!reducedMotion) autoplay = setInterval(() => showSlide(activeIndex + 1, 1), 4600);
   };
 
   carousel.querySelector('[data-promo-prev]')?.addEventListener('click', () => {
@@ -242,6 +270,56 @@ document.querySelectorAll('[data-promo-carousel]').forEach((carousel) => {
   carousel.addEventListener('touchend', (event) => {
     const delta = (event.changedTouches[0]?.clientX || touchStartX) - touchStartX;
     if (Math.abs(delta) > 45) showSlide(activeIndex + (delta < 0 ? 1 : -1), delta < 0 ? 1 : -1);
+    start();
+  }, { passive: true });
+  document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
+  start();
+});
+
+document.querySelectorAll('[data-hero-carousel]').forEach((carousel) => {
+  const slides = [...carousel.querySelectorAll('[data-hero-slide]')];
+  const dotsRoot = document.querySelector('[data-hero-dots]');
+  let activeIndex = 0;
+  let timer;
+  let touchStartX = 0;
+
+  const dots = slides.map((slide, index) => {
+    const dot = document.createElement('button');
+    dot.type = 'button';
+    dot.className = index === 0 ? 'is-active' : '';
+    dot.setAttribute('aria-label', `Mostrar campanha ${index + 1}`);
+    dot.addEventListener('click', () => {
+      show(index);
+      start();
+    });
+    dotsRoot?.append(dot);
+    return dot;
+  });
+
+  const show = (nextIndex) => {
+    const normalized = (nextIndex + slides.length) % slides.length;
+    if (normalized === activeIndex) return;
+    const previousVideo = slides[activeIndex].querySelector('video');
+    previousVideo?.pause();
+    slides.forEach((slide, index) => slide.classList.toggle('is-active', index === normalized));
+    dots.forEach((dot, index) => dot.classList.toggle('is-active', index === normalized));
+    slides[normalized].querySelector('video')?.play().catch(() => {});
+    activeIndex = normalized;
+  };
+
+  const stop = () => clearInterval(timer);
+  const start = () => {
+    stop();
+    if (!reducedMotion) timer = setInterval(() => show(activeIndex + 1), 4400);
+  };
+
+  carousel.addEventListener('touchstart', (event) => {
+    touchStartX = event.touches[0]?.clientX || 0;
+    stop();
+  }, { passive: true });
+  carousel.addEventListener('touchend', (event) => {
+    const delta = (event.changedTouches[0]?.clientX || touchStartX) - touchStartX;
+    if (Math.abs(delta) > 45) show(activeIndex + (delta < 0 ? 1 : -1));
     start();
   }, { passive: true });
   document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
