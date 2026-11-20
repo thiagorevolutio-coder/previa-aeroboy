@@ -174,4 +174,66 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   startAutoplay();
 });
 
+document.querySelectorAll('[data-promo-carousel]').forEach((carousel) => {
+  const slides = [...carousel.querySelectorAll('[data-promo-slide]')];
+  const dotsRoot = carousel.querySelector('[data-promo-dots]');
+  let activeIndex = 0;
+  let autoplay;
+  let touchStartX = 0;
+
+  const dots = slides.map((slide, index) => {
+    const dot = document.createElement('button');
+    dot.type = 'button';
+    dot.className = `promo-dot${index === 0 ? ' is-active' : ''}`;
+    dot.setAttribute('aria-label', `Abrir campanha ${index + 1}`);
+    dot.addEventListener('click', () => showSlide(index, 1));
+    dotsRoot.append(dot);
+    return dot;
+  });
+
+  const showSlide = (nextIndex, direction = 1) => {
+    const normalized = (nextIndex + slides.length) % slides.length;
+    if (normalized === activeIndex) return;
+    const previous = slides[activeIndex];
+    previous.classList.remove('is-active');
+    previous.classList.add('is-leaving');
+    previous.style.setProperty('--promo-direction', direction);
+    slides[normalized].classList.remove('is-leaving');
+    slides[normalized].classList.add('is-active');
+    dots.forEach((dot, index) => dot.classList.toggle('is-active', index === normalized));
+    activeIndex = normalized;
+    setTimeout(() => previous.classList.remove('is-leaving'), 800);
+  };
+
+  const stop = () => clearInterval(autoplay);
+  const start = () => {
+    stop();
+    if (!reducedMotion) autoplay = setInterval(() => showSlide(activeIndex + 1, 1), 5600);
+  };
+
+  carousel.querySelector('[data-promo-prev]')?.addEventListener('click', () => {
+    showSlide(activeIndex - 1, -1);
+    start();
+  });
+  carousel.querySelector('[data-promo-next]')?.addEventListener('click', () => {
+    showSlide(activeIndex + 1, 1);
+    start();
+  });
+  carousel.addEventListener('pointerenter', stop);
+  carousel.addEventListener('pointerleave', start);
+  carousel.addEventListener('focusin', stop);
+  carousel.addEventListener('focusout', start);
+  carousel.addEventListener('touchstart', (event) => {
+    touchStartX = event.touches[0]?.clientX || 0;
+    stop();
+  }, { passive: true });
+  carousel.addEventListener('touchend', (event) => {
+    const delta = (event.changedTouches[0]?.clientX || touchStartX) - touchStartX;
+    if (Math.abs(delta) > 45) showSlide(activeIndex + (delta < 0 ? 1 : -1), delta < 0 ? 1 : -1);
+    start();
+  }, { passive: true });
+  document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
+  start();
+});
+
 updateScrollMotion();

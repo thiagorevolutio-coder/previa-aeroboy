@@ -95,3 +95,50 @@ h1{max-width:12ch;margin-bottom:.65rem;font-size:clamp(3.05rem,6.15vw,6.8rem);li
 @media(prefers-reduced-motion:reduce){.visual-card img,.visual-main video,.carousel-slide img{animation:none!important}}
 .brand-photo video{width:100%;height:100%;object-fit:cover;animation:videoBreath 11s ease-in-out infinite alternate}
 @media(prefers-reduced-motion:reduce){.brand-photo video{animation:none!important}}
+
+/* V4: experiência de loja — campanhas, vitrine e movimento gravitacional */
+.store-announcement{position:fixed;inset:0 0 auto;z-index:120;height:2.45rem;overflow:hidden;background:var(--red);color:#fff;font-size:.78rem;font-weight:750;letter-spacing:.04em;text-transform:uppercase}
+.announcement-track{display:flex;width:max-content;min-width:100%;height:100%;align-items:center;justify-content:center;gap:1.3rem;padding-inline:1.3rem;animation:announcementMove 24s linear infinite}
+.announcement-track span{white-space:nowrap}.announcement-track b{font-weight:950}.announcement-track i{width:.28rem;height:.28rem;border-radius:50%;background:#fff;opacity:.72}
+.home-page .site-header,.home-page .site-header.scrolled{top:2.45rem}.button-light{background:#fff;color:#111;box-shadow:none}.button-light:hover,.button-light:focus-visible{background:#fff;color:#111;box-shadow:0 16px 40px rgba(0,0,0,.22)}
+
+.retail-hero{min-height:100svh;background:#09090b;grid-template-columns:minmax(0,1fr) minmax(24rem,.8fr)}
+.hero-campaign-media,.hero-shade{position:absolute;inset:0;z-index:-5}.hero-campaign-media video{width:100%;height:100%;object-fit:cover;object-position:center 35%;filter:saturate(.92) contrast(1.06);scale:1.045;animation:heroCamera 16s ease-in-out infinite alternate}
+.hero-shade{z-index:-4;background:linear-gradient(90deg,rgba(7,7,9,.97) 0%,rgba(7,7,9,.82) 43%,rgba(7,7,9,.37) 72%,rgba(7,7,9,.58) 100%),linear-gradient(0deg,rgba(7,7,9,.88),transparent 48%)}
+.retail-hero::after{content:"";position:absolute;inset:0;z-index:-3;background:linear-gradient(120deg,transparent 45%,rgba(229,31,42,.22));mix-blend-mode:screen;pointer-events:none}
+.retail-hero .hero-copy{padding:1.5rem 0;text-shadow:0 2px 30px rgba(0,0,0,.48)}
+.retail-hero .hero-text{max-width:44rem;color:#f1f1f2;font-size:clamp(1.02rem,1.25vw,1.18rem)}
+.retail-gravity{min-height:42rem;isolation:isolate}.retail-gravity::before{content:"";position:absolute;inset:8% 2% 0 12%;border:1px solid rgba(255,255,255,.25);border-radius:46% 54% 55% 45%/42% 42% 58% 58%;animation:slowTurn 34s linear infinite}
+.retail-gravity .visual-main{inset:10% 12% 3% 20%;transform:rotate(-4deg) translate3d(calc(var(--gx) * .5),calc(var(--gy) * .5 + var(--scroll-shift)),0)}
+.retail-gravity .visual-main img{object-position:center top}.retail-gravity .visual-top{right:0;top:0;width:31%;aspect-ratio:4/5}.retail-gravity .visual-bottom{left:0;bottom:3%;width:34%;aspect-ratio:4/5}
+.campaign-seal{position:absolute;right:5%;bottom:9%;z-index:8;display:grid;width:8.2rem;aspect-ratio:1;place-content:center;text-align:center;border-radius:50%;background:var(--red);color:#fff;box-shadow:0 18px 50px rgba(0,0,0,.38);transform:translate3d(calc(var(--gx) * -.7),calc(var(--gy) * -.7 + var(--scroll-shift)),0) rotate(8deg);animation:sealFloat 4.8s ease-in-out infinite}
+.campaign-seal::before{content:"";position:absolute;inset:.45rem;border:1px dashed rgba(255,255,255,.7);border-radius:50%}.campaign-seal span{font-size:.64rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase}.campaign-seal strong{font-size:1.05rem;line-height:1;text-transform:uppercase}
+
+.store-promotions{position:relative;overflow:hidden;background:#efefef}.store-promotions::before{content:"SHOP";position:absolute;right:-.03em;top:-.18em;color:transparent;-webkit-text-stroke:1px rgba(11,11,13,.07);font-size:clamp(9rem,24vw,24rem);font-weight:950;line-height:1;letter-spacing:-.08em;pointer-events:none}
+.retail-heading{position:relative;z-index:2;margin-bottom:2rem}.retail-heading h2{max-width:13ch}.promotion-stage{position:relative;min-height:38rem;perspective:1300px}
+.promotion-banner{position:absolute;inset:0;display:grid;grid-template-columns:minmax(18rem,.8fr) minmax(0,1.2fr);align-items:center;gap:clamp(2rem,5vw,6rem);overflow:hidden;padding:clamp(1.2rem,3vw,3rem);border-radius:1.7rem;box-shadow:0 28px 80px rgba(0,0,0,.18);opacity:0;visibility:hidden;transform:translate3d(8%,3rem,0) rotateY(-6deg) scale(.96);transition:opacity .6s ease,visibility .6s,transform .75s cubic-bezier(.2,.75,.2,1)}
+.promotion-banner.is-active{opacity:1;visibility:visible;transform:none;z-index:3}.promotion-banner.is-leaving{opacity:0;visibility:visible;transform:translate3d(-7%,1rem,0) rotateY(5deg) scale(.97);z-index:2}
+.promotion-banner>img{position:relative;z-index:2;width:min(26rem,100%);height:32rem;justify-self:center;object-fit:cover;border-radius:1.25rem;box-shadow:0 22px 55px rgba(0,0,0,.26);transform:rotate(-3deg);animation:promoFloat 6.5s ease-in-out infinite}
+.promotion-banner:nth-child(2)>img{transform:rotate(3deg);animation-delay:-2s}.promotion-banner:nth-child(3)>img{animation-delay:-4s}
+.promo-copy{position:relative;z-index:3;max-width:43rem}.promo-copy>span{display:inline-flex;margin-bottom:1rem;padding:.42rem .65rem;border:1px solid currentColor;border-radius:999px;font-size:.72rem;font-weight:900;letter-spacing:.13em;text-transform:uppercase}.promo-copy h3{max-width:12ch;margin:0;font-size:clamp(2.7rem,5.1vw,5.8rem);line-height:.88;letter-spacing:-.065em}.promo-copy p{max-width:36rem;margin:1.3rem 0 1.7rem;font-size:clamp(1rem,1.4vw,1.15rem)}.promo-word{position:absolute;right:-.04em;bottom:-.22em;z-index:0;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.17);font-size:clamp(8rem,18vw,18rem);line-height:1;letter-spacing:-.08em}
+.promo-red{background:linear-gradient(135deg,#e51f2a,#8c0811);color:#fff}.promo-dark{background:linear-gradient(135deg,#08080a,#24242a);color:#fff}.promo-white{background:linear-gradient(135deg,#fff,#dddde0);color:#0b0b0d}.promo-white .promo-word{-webkit-text-stroke-color:rgba(11,11,13,.08)}
+.promotion-controls{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:1rem;margin-top:1.3rem}.promotion-controls button{border:0;background:transparent;color:var(--ink);font:850 .88rem/1 inherit;cursor:pointer;padding:.75rem 0}.promotion-controls button:hover,.promotion-controls button:focus-visible{color:var(--red)}.promotion-controls>div{display:flex;justify-content:center;gap:.55rem}.promo-dot{width:2.5rem;height:.28rem;border:0;border-radius:999px;background:#c7c7ca;cursor:pointer;transition:width .25s,background .25s}.promo-dot.is-active{width:4.5rem;background:var(--red)}
+
+.look-carousel{background:linear-gradient(180deg,#fff 0%,#f0f0f2 100%)}.carousel-heading h2{max-width:14ch}.carousel-controls button{width:auto;min-width:5.8rem;padding-inline:1rem;border-radius:999px;font-size:.78rem;text-transform:uppercase;letter-spacing:.06em}.carousel-slide{box-shadow:0 20px 55px rgba(0,0,0,.14)}
+.collection{background:linear-gradient(180deg,#f4f3f0,#fff)}.product-card{box-shadow:0 18px 55px rgba(0,0,0,.15)}
+
+@keyframes announcementMove{to{transform:translateX(-18%)}}
+@keyframes heroCamera{0%{scale:1.045;translate:-1% 0}100%{scale:1.12;translate:1.5% -1%}}
+@keyframes sealFloat{0%,100%{translate:0 0;rotate:8deg}50%{translate:0 -16px;rotate:2deg}}
+@keyframes promoFloat{0%,100%{translate:0 0;rotate:-3deg}50%{translate:0 -14px;rotate:-1deg}}
+
+@media(max-width:760px){
+  .store-announcement{height:2.25rem}.announcement-track{justify-content:flex-start;animation-duration:18s}.home-page .site-header,.home-page .site-header.scrolled{top:2.25rem}
+  .retail-hero{min-height:auto;padding-top:8.6rem;background:#08080a}.hero-campaign-media{inset:0 0 42%}.hero-campaign-media video{object-position:62% center}.hero-shade{background:linear-gradient(0deg,#08080a 38%,rgba(8,8,10,.28) 72%,rgba(8,8,10,.58) 100%)}.retail-hero .hero-copy{padding-top:37vh}.retail-hero h1{font-size:clamp(3rem,16.5vw,5.3rem)}
+  .retail-gravity{min-height:28rem}.retail-gravity .visual-main{inset:7% 9% 5% 18%}.campaign-seal{right:1%;bottom:6%;width:6.8rem}.campaign-seal strong{font-size:.88rem}.campaign-seal span{font-size:.56rem}
+  .store-promotions{padding-top:4.7rem}.retail-heading{margin-bottom:1.4rem}.retail-heading>p{font-size:1rem}
+  .promotion-stage{min-height:38rem}.promotion-banner{grid-template-columns:1fr;align-content:end;gap:0;padding:1rem}.promotion-banner>img{position:absolute;inset:0;width:100%;height:100%;border-radius:0;box-shadow:none;transform:none!important;animation:mobilePromoCamera 9s ease-in-out infinite alternate}.promotion-banner::after{content:"";position:absolute;inset:24% 0 0;z-index:1;background:linear-gradient(transparent,rgba(0,0,0,.94))}.promo-white::after{background:linear-gradient(transparent,rgba(255,255,255,.96))}.promo-copy{align-self:end;padding:.7rem;z-index:3}.promo-copy h3{font-size:clamp(2.5rem,12vw,4.2rem)}.promo-copy p{margin:.9rem 0 1.2rem;font-size:1rem}.promo-copy .button{min-height:3rem}.promo-word{display:none}.promotion-controls{margin-top:.7rem}.promotion-controls button span{font-size:.8rem}
+  .carousel-controls{display:none}.carousel-heading{display:block}.look-carousel{padding-bottom:4.4rem}
+}
+@keyframes mobilePromoCamera{0%{scale:1.02;translate:-1% 0}100%{scale:1.12;translate:1.5% -1%}}
+@media(prefers-reduced-motion:reduce){.announcement-track,.hero-campaign-media video,.campaign-seal,.promotion-banner>img{animation:none!important}.promotion-banner{transition:none}}
