@@ -2,6 +2,7 @@ const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const finePointer = matchMedia('(pointer: fine)').matches;
 const mobileViewport = matchMedia('(max-width: 760px)');
 const header = document.querySelector('[data-header]');
+const mobileGravityMedia = [...document.querySelectorAll('.promotion-banner > img, .carousel-slide img, .brand-photo video, .location-visual img')];
 
 document.querySelectorAll('a[href^="https://wa.me/"]').forEach((link) => {
   link.href = 'https://bio.site/vistoaeroboy';
@@ -48,6 +49,17 @@ const updateScrollMotion = () => {
       const shift = Math.max(-limit, Math.min(limit, center * speed));
       layer.style.setProperty('--motion-y', `${shift}px`);
     });
+
+    if (mobileViewport.matches) {
+      mobileGravityMedia.forEach((item, index) => {
+        const rect = item.getBoundingClientRect();
+        if (rect.bottom < -120 || rect.top > innerHeight + 120) return;
+        const center = rect.top + rect.height / 2 - innerHeight / 2;
+        const strength = index % 2 === 0 ? -0.035 : -0.025;
+        const shift = Math.max(-16, Math.min(16, center * strength));
+        item.style.setProperty('--mobile-gravity-y', `${shift}px`);
+      });
+    }
   }
   scrollTicking = false;
 };
@@ -235,5 +247,18 @@ document.querySelectorAll('[data-promo-carousel]').forEach((carousel) => {
   document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
   start();
 });
+
+const mediaObserver = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    const video = entry.target;
+    if (entry.isIntersecting && !document.hidden) {
+      video.play().catch(() => {});
+    } else {
+      video.pause();
+    }
+  });
+}, { rootMargin: '120px 0px', threshold: 0.01 });
+
+document.querySelectorAll('video').forEach((video) => mediaObserver.observe(video));
 
 updateScrollMotion();
