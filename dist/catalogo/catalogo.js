@@ -92,7 +92,7 @@
           <p class="product-meta">Tamanhos: ${product.sizes.map(escapeHtml).join(' • ')}</p>
           <div class="product-bottom">
             <span class="product-price"><small>${modeName()}</small><strong>${priceLabel(product)}</strong></span>
-            <button class="product-choose" type="button" data-product-open="${product.id}">ESCOLHER →</button>
+            <button class="product-choose" type="button" data-product-open="${product.id}">ESCOLHER</button>
           </div>
         </div>
       </article>`).join('');
