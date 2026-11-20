@@ -4,6 +4,12 @@ const mobileViewport = matchMedia('(max-width: 760px)');
 const header = document.querySelector('[data-header]');
 const mobileGravityMedia = [...document.querySelectorAll('.promotion-banner > img, .carousel-slide img, .brand-photo video, .location-visual img')];
 const gravitySections = [...document.querySelectorAll('main > section:not(.hero):not(.ticker)')];
+const gravityItems = [...document.querySelectorAll('.gravity-item')];
+const motionLayers = [...document.querySelectorAll('.motion-layer')];
+const activeGravityItems = new Set();
+const activeMotionLayers = new Set();
+const activeGravitySections = new Set();
+const activeMobileGravityMedia = new Set();
 
 gravitySections.forEach((section) => {
   section.classList.add('gravity-section');
@@ -14,6 +20,30 @@ gravitySections.forEach((section) => {
     section.append(orb);
   });
 });
+
+const motionVisibility = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    const element = entry.target;
+    const active = entry.isIntersecting;
+    const collection = element.classList.contains('gravity-item')
+      ? activeGravityItems
+      : element.classList.contains('motion-layer')
+        ? activeMotionLayers
+        : element.classList.contains('gravity-section')
+          ? activeGravitySections
+          : activeMobileGravityMedia;
+    if (active) collection.add(element);
+    else collection.delete(element);
+    if (element.classList.contains('gravity-section')) {
+      element.classList.toggle('is-motion-active', active);
+    }
+  });
+}, { rootMargin: '140px 0px', threshold: 0 });
+
+gravityItems.forEach((item) => motionVisibility.observe(item));
+motionLayers.forEach((layer) => motionVisibility.observe(layer));
+gravitySections.forEach((section) => motionVisibility.observe(section));
+mobileGravityMedia.forEach((item) => motionVisibility.observe(item));
 
 document.querySelectorAll('a[href^="https://wa.me/"]').forEach((link) => {
   link.href = 'https://bio.site/vistoaeroboy';
@@ -45,14 +75,14 @@ const updateScrollMotion = () => {
 
   if (!reducedMotion) {
     const gravityLimit = mobileViewport.matches ? 24 : 34;
-    document.querySelectorAll('.gravity-item').forEach((item) => {
+    activeGravityItems.forEach((item) => {
       const rect = item.getBoundingClientRect();
       const center = rect.top + rect.height / 2 - innerHeight / 2;
       const shift = Math.max(-gravityLimit, Math.min(gravityLimit, center * -0.05));
       item.style.setProperty('--scroll-shift', `${shift}px`);
     });
 
-    document.querySelectorAll('.motion-layer').forEach((layer) => {
+    activeMotionLayers.forEach((layer) => {
       const rect = layer.parentElement.getBoundingClientRect();
       const speed = Number(layer.dataset.motionSpeed || 0.04);
       const center = rect.top + rect.height / 2 - innerHeight / 2;
@@ -61,12 +91,12 @@ const updateScrollMotion = () => {
       layer.style.setProperty('--motion-y', `${shift}px`);
     });
 
-    gravitySections.forEach((section, index) => {
+    activeGravitySections.forEach((section) => {
       const rect = section.getBoundingClientRect();
-      if (rect.bottom < -160 || rect.top > innerHeight + 160) return;
       const center = rect.top + rect.height / 2 - innerHeight / 2;
       const limit = mobileViewport.matches ? 28 : 48;
       const shift = Math.max(-limit, Math.min(limit, center * -0.055));
+      const index = gravitySections.indexOf(section);
       const horizontal = Math.sin((y + index * 190) * 0.003) * (mobileViewport.matches ? 10 : 18);
       const rotate = shift * 0.08;
       section.style.setProperty('--section-y', `${shift}px`);
@@ -79,10 +109,10 @@ const updateScrollMotion = () => {
     });
 
     if (mobileViewport.matches) {
-      mobileGravityMedia.forEach((item, index) => {
+      activeMobileGravityMedia.forEach((item) => {
         const rect = item.getBoundingClientRect();
-        if (rect.bottom < -120 || rect.top > innerHeight + 120) return;
         const center = rect.top + rect.height / 2 - innerHeight / 2;
+        const index = mobileGravityMedia.indexOf(item);
         const strength = index % 2 === 0 ? -0.035 : -0.025;
         const shift = Math.max(-16, Math.min(16, center * strength));
         item.style.setProperty('--mobile-gravity-y', `${shift}px`);
@@ -98,6 +128,8 @@ addEventListener('scroll', () => {
     scrollTicking = true;
   }
 }, { passive: true });
+
+requestAnimationFrame(updateScrollMotion);
 
 if (!reducedMotion && finePointer) {
   document.querySelectorAll('[data-gravity-scene]').forEach((scene) => {
@@ -194,10 +226,11 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   carousel.querySelector('[data-carousel-next]')?.addEventListener('click', () => track.scrollBy({ left: step(), behavior: 'smooth' }));
   track.addEventListener('scroll', () => requestAnimationFrame(updateProgress), { passive: true });
   let carouselTimer;
+  let carouselVisible = false;
   const stopAutoplay = () => clearInterval(carouselTimer);
   const startAutoplay = () => {
     stopAutoplay();
-    if (reducedMotion) return;
+    if (reducedMotion || !carouselVisible || document.hidden) return;
     carouselTimer = setInterval(() => {
       const atEnd = track.scrollLeft + track.clientWidth >= track.scrollWidth - 12;
       track.scrollTo({ left: atEnd ? 0 : track.scrollLeft + step(), behavior: 'smooth' });
@@ -209,9 +242,14 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   carousel.addEventListener('focusout', startAutoplay);
   carousel.addEventListener('touchstart', stopAutoplay, { passive: true });
   carousel.addEventListener('touchend', startAutoplay, { passive: true });
+  const carouselVisibility = new IntersectionObserver(([entry]) => {
+    carouselVisible = entry.isIntersecting;
+    if (carouselVisible) startAutoplay();
+    else stopAutoplay();
+  }, { rootMargin: '80px 0px', threshold: 0.04 });
+  carouselVisibility.observe(carousel);
   document.addEventListener('visibilitychange', () => document.hidden ? stopAutoplay() : startAutoplay());
   updateProgress();
-  startAutoplay();
 });
 
 document.querySelectorAll('[data-promo-carousel]').forEach((carousel) => {
@@ -220,6 +258,7 @@ document.querySelectorAll('[data-promo-carousel]').forEach((carousel) => {
   let activeIndex = 0;
   let autoplay;
   let touchStartX = 0;
+  let carouselVisible = false;
 
   const dots = slides.map((slide, index) => {
     const dot = document.createElement('button');
@@ -248,7 +287,7 @@ document.querySelectorAll('[data-promo-carousel]').forEach((carousel) => {
   const stop = () => clearInterval(autoplay);
   const start = () => {
     stop();
-    if (!reducedMotion) autoplay = setInterval(() => showSlide(activeIndex + 1, 1), 4600);
+    if (!reducedMotion && carouselVisible && !document.hidden) autoplay = setInterval(() => showSlide(activeIndex + 1, 1), 4600);
   };
 
   carousel.querySelector('[data-promo-prev]')?.addEventListener('click', () => {
@@ -272,8 +311,13 @@ document.querySelectorAll('[data-promo-carousel]').forEach((carousel) => {
     if (Math.abs(delta) > 45) showSlide(activeIndex + (delta < 0 ? 1 : -1), delta < 0 ? 1 : -1);
     start();
   }, { passive: true });
+  const promoVisibility = new IntersectionObserver(([entry]) => {
+    carouselVisible = entry.isIntersecting;
+    if (carouselVisible) start();
+    else stop();
+  }, { rootMargin: '80px 0px', threshold: 0.04 });
+  promoVisibility.observe(carousel);
   document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
-  start();
 });
 
 document.querySelectorAll('[data-hero-carousel]').forEach((carousel) => {
@@ -282,6 +326,7 @@ document.querySelectorAll('[data-hero-carousel]').forEach((carousel) => {
   let activeIndex = 0;
   let timer;
   let touchStartX = 0;
+  let carouselVisible = false;
 
   const dots = slides.map((slide, index) => {
     const dot = document.createElement('button');
@@ -310,7 +355,7 @@ document.querySelectorAll('[data-hero-carousel]').forEach((carousel) => {
   const stop = () => clearInterval(timer);
   const start = () => {
     stop();
-    if (!reducedMotion) timer = setInterval(() => show(activeIndex + 1), 4400);
+    if (!reducedMotion && carouselVisible && !document.hidden) timer = setInterval(() => show(activeIndex + 1), 4400);
   };
 
   carousel.addEventListener('touchstart', (event) => {
@@ -322,8 +367,13 @@ document.querySelectorAll('[data-hero-carousel]').forEach((carousel) => {
     if (Math.abs(delta) > 45) show(activeIndex + (delta < 0 ? 1 : -1));
     start();
   }, { passive: true });
+  const heroVisibility = new IntersectionObserver(([entry]) => {
+    carouselVisible = entry.isIntersecting;
+    if (carouselVisible) start();
+    else stop();
+  }, { threshold: 0.04 });
+  heroVisibility.observe(carousel);
   document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
-  start();
 });
 
 const mediaObserver = new IntersectionObserver((entries) => {

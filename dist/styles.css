@@ -228,3 +228,28 @@ h1{max-width:12ch;margin-bottom:.65rem;font-size:clamp(3.05rem,6.15vw,6.8rem);li
   .gravity-orb-a{right:-5rem;width:12rem;height:12rem}.gravity-orb-b{left:-4rem;width:9rem;height:9rem}.gravity-section .section-heading,.gravity-section .carousel-heading,.gravity-section .brand-copy,.gravity-section .location-copy{transform:translate3d(0,var(--content-gravity-y,0),0)}
   .home-page .store-promotions{background:radial-gradient(circle at 90% 7%,rgba(255,65,76,.38),transparent 24%),radial-gradient(circle at 4% 86%,rgba(229,31,42,.24),transparent 28%),linear-gradient(165deg,#050505,#22080b 58%,#070707)}.home-page .look-carousel{background:radial-gradient(circle at 7% 8%,rgba(229,31,42,.3),transparent 25%),linear-gradient(180deg,#0e0e10,#050505)}.home-page .collection{background:radial-gradient(circle at 94% 10%,rgba(255,61,72,.34),transparent 24%),linear-gradient(180deg,#070707,#17080a)}
 }
+
+/* V9: movimento mobile leve, sem reservas artificiais de espaço */
+@media(max-width:760px){
+  .home-page .section{padding:3.25rem 1rem;content-visibility:visible;contain:none;contain-intrinsic-size:auto}
+  .home-page .gravity-section{overflow:clip}
+  .home-page .gravity-orb{will-change:auto;transition:transform .1s linear}
+  .home-page .gravity-section.is-motion-active .gravity-orb{will-change:transform}
+  .home-page .gravity-orb-b{display:none}
+  .home-page .gravity-section .section-heading,.home-page .gravity-section .carousel-heading,.home-page .gravity-section .brand-copy,.home-page .gravity-section .location-copy{will-change:auto;transition:transform .1s linear}
+  .home-page .gravity-section.is-motion-active .section-heading,.home-page .gravity-section.is-motion-active .carousel-heading,.home-page .gravity-section.is-motion-active .brand-copy,.home-page .gravity-section.is-motion-active .location-copy{will-change:transform}
+  .home-page .hero-media-slide{transition:opacity .62s ease,visibility .62s,transform 4.4s cubic-bezier(.2,.7,.2,1)}
+  .home-page .hero-media-slide img,.home-page .hero-media-slide video{will-change:auto}
+  .home-page .hero-media-slide.is-active img,.home-page .hero-media-slide.is-active video{will-change:transform}
+  .home-page .retail-gravity{min-height:12rem}
+  .home-page .scroll-cue{display:none}
+  .home-page .commerce-benefits article{min-height:5rem}
+  .home-page .promotion-stage{min-height:34rem}
+  .home-page .promotion-banner>img,.home-page .carousel-slide img,.home-page .brand-photo video,.home-page .location-visual img{will-change:auto}
+  .home-page .promotion-banner.is-active>img{will-change:transform}
+  .home-page .carousel-slide{min-height:22rem}
+  .home-page .product-card{min-height:23rem}
+  .home-page .brand-photo{min-height:21rem}
+  .home-page .location-visual{min-height:21rem}
+  .home-page .collection-grid{gap:.7rem}
+}
