@@ -15,7 +15,8 @@
     filter: 'all',
     query: '',
     cart: loadCart(),
-    selectedProduct: null
+    selectedProduct: null,
+    checkoutExpanded: false
   };
 
   const $ = (selector, root = document) => root.querySelector(selector);
@@ -155,6 +156,7 @@
     const existing = state.cart.find(entry => cartKey(entry) === cartKey(item));
     if (existing) existing.quantity += quantity;
     else state.cart.push(item);
+    state.checkoutExpanded = false;
     saveCart();
     renderCart();
     showToast('Produto adicionado ao pedido');
@@ -187,12 +189,17 @@
         <div class="cart-item-info"><h4>${escapeHtml(item.product.name)}</h4><p>Tamanho: ${escapeHtml(item.size)}</p><p>Cor: ${escapeHtml(item.color)}</p><strong>${money(priceOf(item.product) * item.quantity)}</strong></div>
         <div class="cart-item-actions"><button class="remove-item" type="button" data-remove-item="${index}" aria-label="Remover ${escapeHtml(item.product.name)}">×</button><div class="mini-stepper"><button type="button" data-cart-minus="${index}" aria-label="Diminuir">−</button><span>${item.quantity}</span><button type="button" data-cart-plus="${index}" aria-label="Aumentar">+</button></div></div>
       </article>`).join('');
+    if (!details.length) state.checkoutExpanded = false;
+    $('[data-cart-actions]').hidden = !details.length || state.checkoutExpanded;
+    checkoutForm.hidden = !details.length || !state.checkoutExpanded;
     $('[data-message-preview-section]').hidden = details.length === 0;
     updateMessagePreview();
   }
 
   function openCart() {
     if (dialog.open) dialog.close();
+    state.checkoutExpanded = false;
+    renderCart();
     cartDrawer.classList.add('open');
     cartDrawer.setAttribute('aria-hidden', 'false');
     overlay.hidden = false;
@@ -205,6 +212,21 @@
     cartDrawer.setAttribute('aria-hidden', 'true');
     overlay.hidden = true;
     document.body.classList.remove('locked');
+  }
+
+  function continueShopping() {
+    closeCart();
+    document.querySelector('#produtos').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function startCheckout() {
+    if (!state.cart.length) return;
+    state.checkoutExpanded = true;
+    renderCart();
+    requestAnimationFrame(() => {
+      checkoutForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setTimeout(() => checkoutForm.elements.customerName.focus(), 350);
+    });
   }
 
   function changeQuantity(index, delta) {
@@ -291,6 +313,8 @@
     if (event.target.closest('[data-cart-open]')) openCart();
     if (event.target.closest('[data-cart-close]') || event.target === overlay) closeCart();
     if (event.target.closest('[data-cart-shop]')) { closeCart(); document.querySelector('#produtos').scrollIntoView({ behavior: 'smooth' }); }
+    if (event.target.closest('[data-continue-shopping]')) continueShopping();
+    if (event.target.closest('[data-start-checkout]')) startCheckout();
     const remove = event.target.closest('[data-remove-item]');
     if (remove) { state.cart.splice(Number(remove.dataset.removeItem), 1); saveCart(); renderCart(); }
     const minus = event.target.closest('[data-cart-minus]');
