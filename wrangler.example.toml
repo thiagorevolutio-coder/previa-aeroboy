@@ -5,11 +5,12 @@ pages_build_output_dir = "dist"
 [[d1_databases]]
 binding = "AEROBOY_DB"
 database_name = "aeroboy-catalog"
-database_id = "SUBSTITUIR_PELO_ID_DO_D1"
+database_id = "COLE_AQUI_O_ID_DO_D1"
 migrations_dir = "migrations"
 
 [[r2_buckets]]
 binding = "AEROBOY_MEDIA"
 bucket_name = "aeroboy-media"
 
+# Depois de preencher o ID, renomeie este arquivo para wrangler.toml.
 # Configure ADMIN_PASSWORD e SESSION_SECRET como secrets no Cloudflare Pages.

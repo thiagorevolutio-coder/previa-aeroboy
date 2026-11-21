@@ -14,7 +14,7 @@ Nunca coloque os valores reais das senhas no GitHub.
 ## Passos
 
 1. Crie um banco D1 chamado `aeroboy-catalog`.
-2. Substitua `SUBSTITUIR_PELO_ID_DO_D1` no `wrangler.toml` pelo ID desse banco.
+2. Se for usar o Wrangler pela linha de comando, copie `wrangler.example.toml` para `wrangler.toml` e substitua `COLE_AQUI_O_ID_DO_D1` pelo ID desse banco. Pela interface do Cloudflare Pages, basta criar os bindings descritos abaixo.
 3. Aplique a migração `migrations/0001_aeroboy_admin.sql` no banco.
 4. Crie um bucket R2 chamado `aeroboy-media`.
 5. Em **Workers & Pages → projeto Aeroboy → Settings → Bindings**, conecte:
