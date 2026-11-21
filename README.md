@@ -12,6 +12,7 @@ Site institucional e catálogo digital da Aeroboy, com foco em SEO local, experi
 - Vídeo oficial da marca em destaque
 - Carrossel de coleções com suporte a toque
 - Catálogo de roupas masculinas
+- Painel administrativo para produtos, fotos, preços, pedidos, textos e unidades
 - Páginas individuais para cinco unidades em Fortaleza
 - Dados estruturados para SEO local
 - Sitemap e metadados sociais
@@ -20,3 +21,7 @@ Site institucional e catálogo digital da Aeroboy, com foco em SEO local, experi
 ## Estrutura
 
 O conteúdo pronto para publicação está na pasta `dist/`.
+
+## Painel administrativo
+
+O painel fica em `/painel/` e não é listado na navegação pública. A versão online usa Cloudflare Pages Functions, D1 para os dados e R2 para as imagens. Consulte [CONFIGURAR-PAINEL.md](CONFIGURAR-PAINEL.md) para ativar os recursos no ambiente de produção.

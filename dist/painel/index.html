@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#09090b">
+  <title>Painel Aeroboy</title>
+  <link rel="icon" href="../assets/logo.jpg" type="image/jpeg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="painel.css">
+</head>
+<body>
+  <section class="login-screen" data-login-screen>
+    <div class="login-visual">
+      <img src="../assets/logo.jpg" alt="Aeroboy" width="74" height="74">
+      <p class="eyebrow">CENTRAL AEROBOY</p>
+      <h1>Seu catálogo<br><em>sob controle.</em></h1>
+      <p>Atualize fotos, produtos, preços, unidades e pedidos em um só lugar.</p>
+      <div class="login-features"><span>Catálogo</span><span>Fotos</span><span>Pedidos</span><span>Site</span></div>
+    </div>
+    <div class="login-card">
+      <div class="mobile-brand"><img src="../assets/logo.jpg" alt="" width="54" height="54"><b>AEROBOY</b></div>
+      <p class="eyebrow">ACESSO RESTRITO</p>
+      <h2>Entrar no painel</h2>
+      <p>Use a senha administrativa configurada para a loja.</p>
+      <form data-login-form>
+        <label><span>Senha</span><div class="password-field"><input type="password" name="password" autocomplete="current-password" required placeholder="Digite sua senha"><button type="button" data-toggle-password aria-label="Mostrar senha">◉</button></div></label>
+        <p class="form-error" data-login-error hidden></p>
+        <button class="primary-button" type="submit">Entrar com segurança <span>→</span></button>
+      </form>
+      <button class="demo-button" type="button" data-demo-login hidden>Visualizar demonstração local</button>
+      <small class="login-note">O painel não aparece no menu público do site.</small>
+    </div>
+  </section>
+
+  <div class="admin-shell" data-admin-shell hidden>
+    <aside class="sidebar" data-sidebar>
+      <a class="panel-brand" href="./" aria-label="Painel Aeroboy"><img src="../assets/logo.jpg" alt="" width="46" height="46"><span><b>AEROBOY</b><small>Central de gestão</small></span></a>
+      <nav aria-label="Seções do painel">
+        <button class="active" type="button" data-view-link="dashboard"><i>⌂</i><span>Visão geral</span></button>
+        <button type="button" data-view-link="products"><i>◇</i><span>Catálogo</span><b data-nav-products>0</b></button>
+        <button type="button" data-view-link="orders"><i>▤</i><span>Pedidos</span><b class="alert" data-nav-orders hidden>0</b></button>
+        <button type="button" data-view-link="site"><i>✦</i><span>Conteúdo do site</span></button>
+        <button type="button" data-view-link="units"><i>⌖</i><span>Unidades e WhatsApp</span></button>
+      </nav>
+      <div class="sidebar-footer"><a href="../catalogo/" target="_blank">Ver catálogo <span>↗</span></a><button type="button" data-logout>Sair</button></div>
+    </aside>
+
+    <main class="admin-main">
+      <header class="topbar"><button class="menu-button" type="button" data-menu aria-label="Abrir menu">☰</button><div><p data-page-kicker>PAINEL AEROBOY</p><h1 data-page-title>Visão geral</h1></div><div class="topbar-actions"><span class="connection-pill" data-connection><i></i> Conectado</span><button class="user-button" type="button" title="Administrador">A</button></div></header>
+      <div class="demo-banner" data-demo-banner hidden><b>Modo de demonstração local</b><span>As alterações ficam apenas neste navegador até o banco online ser conectado.</span></div>
+
+      <section class="view active" data-view="dashboard">
+        <div class="welcome-card"><div><p class="eyebrow">BOM TRABALHO</p><h2>O catálogo da Aeroboy,<br><em>simples de administrar.</em></h2><p>Use os atalhos para trocar fotos, cadastrar peças ou acompanhar os pedidos enviados pelo WhatsApp.</p><div class="welcome-actions"><button class="primary-button" type="button" data-new-product>+ Novo produto</button><button class="secondary-button" type="button" data-go-products>Gerenciar catálogo</button></div></div><div class="welcome-art"><span></span><img src="../catalogo/produtos/slim-03.jpg" alt="" width="210" height="310"><img src="../catalogo/produtos/plus-03.jpg" alt="" width="210" height="310"></div></div>
+        <div class="stats-grid"><article><span class="stat-icon red">◇</span><p>Produtos cadastrados</p><strong data-stat-products>0</strong><small><b data-stat-active>0</b> visíveis no catálogo</small></article><article><span class="stat-icon gold">▤</span><p>Pedidos recebidos</p><strong data-stat-orders>0</strong><small><b data-stat-new>0</b> aguardando atendimento</small></article><article><span class="stat-icon blue">◉</span><p>Unidades ativas</p><strong data-stat-units>5</strong><small>WhatsApps configurados</small></article><article><span class="stat-icon green">✓</span><p>Status do catálogo</p><strong class="status-word">Online</strong><small>Dados públicos disponíveis</small></article></div>
+        <div class="dashboard-grid"><section class="panel-card quick-actions"><header><div><p class="eyebrow">ATALHOS</p><h3>Ações rápidas</h3></div></header><div><button type="button" data-new-product><i>＋</i><span><b>Adicionar produto</b><small>Cadastre uma nova peça</small></span><em>→</em></button><button type="button" data-go-products><i>▧</i><span><b>Trocar fotos</b><small>Edite imagens do catálogo</small></span><em>→</em></button><button type="button" data-view-link="units"><i>⌖</i><span><b>Atualizar WhatsApps</b><small>Gerencie as cinco unidades</small></span><em>→</em></button><a href="../catalogo/" target="_blank"><i>↗</i><span><b>Visualizar catálogo</b><small>Veja como o cliente enxerga</small></span><em>→</em></a></div></section><section class="panel-card recent-products"><header><div><p class="eyebrow">CATÁLOGO</p><h3>Produtos recentes</h3></div><button type="button" data-go-products>Ver todos</button></header><div data-recent-products></div></section></div>
+      </section>
+
+      <section class="view" data-view="products">
+        <div class="section-head"><div><p class="eyebrow">GESTÃO DO CATÁLOGO</p><h2>Produtos</h2><p>Cadastre, edite, oculte ou exclua peças e troque as fotos sem mexer no código.</p></div><button class="primary-button" type="button" data-new-product>+ Adicionar produto</button></div>
+        <div class="toolbar"><label class="admin-search"><span>⌕</span><input type="search" data-product-search placeholder="Buscar por nome, linha ou categoria"></label><select data-product-line><option value="all">Todas as linhas</option><option>Slim</option><option>Plus Size</option><option>Juvenil</option></select><select data-product-status><option value="all">Todos os status</option><option value="active">Visíveis</option><option value="inactive">Ocultos</option></select><button class="outline-button" type="button" data-import-products>Importar catálogo atual</button></div>
+        <div class="product-admin-grid" data-admin-products></div>
+        <div class="empty-admin" data-products-empty hidden><span>◇</span><h3>Nenhum produto encontrado</h3><p>Altere os filtros ou cadastre uma nova peça.</p></div>
+      </section>
+
+      <section class="view" data-view="orders">
+        <div class="section-head"><div><p class="eyebrow">ATENDIMENTO</p><h2>Pedidos</h2><p>Veja os pedidos iniciados no catálogo e acompanhe o atendimento de cada cliente.</p></div><button class="outline-button" type="button" data-refresh-orders>↻ Atualizar</button></div>
+        <div class="order-tabs" role="tablist"><button class="active" type="button" data-order-filter="all">Todos</button><button type="button" data-order-filter="new">Novos</button><button type="button" data-order-filter="contacted">Em atendimento</button><button type="button" data-order-filter="completed">Concluídos</button></div>
+        <div class="orders-list" data-orders-list></div><div class="empty-admin" data-orders-empty hidden><span>▤</span><h3>Nenhum pedido por aqui</h3><p>Os pedidos enviados pelo catálogo aparecerão nesta tela.</p></div>
+      </section>
+
+      <section class="view" data-view="site">
+        <div class="section-head"><div><p class="eyebrow">CONTEÚDO</p><h2>Textos e links do site</h2><p>Atualize as principais mensagens do catálogo sem abrir o código.</p></div></div>
+        <form class="settings-form panel-card" data-settings-form><div class="form-section"><header><span>01</span><div><h3>Apresentação do catálogo</h3><p>Textos que aparecem antes da grade de produtos.</p></div></header><div class="form-grid"><label class="full"><span>Título principal</span><input name="title" maxlength="90" placeholder="Catálogo completo"></label><label class="full"><span>Texto de apoio</span><textarea name="subtitle" rows="3" maxlength="240"></textarea></label><label class="full"><span>Faixa de avisos</span><input name="notice" maxlength="220"></label></div></div><div class="form-section"><header><span>02</span><div><h3>Redes e atendimento</h3><p>Links usados nos botões do site.</p></div></header><div class="form-grid"><label class="full"><span>Instagram</span><input name="instagram" type="url" placeholder="https://instagram.com/..."></label></div></div><footer><button class="primary-button" type="submit">Salvar alterações</button><a class="secondary-button" href="../catalogo/" target="_blank">Ver catálogo ↗</a></footer></form>
+      </section>
+
+      <section class="view" data-view="units">
+        <div class="section-head"><div><p class="eyebrow">ATENDIMENTO</p><h2>Unidades e WhatsApp</h2><p>O cliente escolhe a unidade antes de enviar o pedido. Mantenha os números corretos.</p></div><button class="primary-button" type="button" data-add-unit>+ Adicionar unidade</button></div>
+        <form data-units-form><div class="units-list" data-units-list></div><div class="sticky-save"><p><b>Importante:</b> use DDI + DDD + número, somente algarismos.</p><button class="primary-button" type="submit">Salvar unidades</button></div></form>
+      </section>
+    </main>
+  </div>
+
+  <dialog class="product-editor" data-product-editor>
+    <form data-product-editor-form>
+      <header><div><p class="eyebrow">CATÁLOGO</p><h2 data-editor-title>Novo produto</h2></div><button type="button" data-editor-close aria-label="Fechar">×</button></header>
+      <div class="editor-body"><section class="image-editor"><label class="upload-box" data-upload-box><input type="file" name="photo" accept="image/jpeg,image/png,image/webp,image/avif"><img data-photo-preview src="../assets/camisas.jpg" alt="Pré-visualização"><span class="upload-overlay"><b>Trocar foto</b><small>JPG, PNG ou WEBP • até 8 MB</small></span></label><label><span>Ou endereço da imagem</span><input name="image" placeholder="/catalogo/produtos/foto.jpg"></label></section><section class="fields-editor"><div class="form-grid"><label class="full"><span>Nome do produto *</span><input name="name" required maxlength="120" placeholder="Ex.: Camisa gola polo premium"></label><label><span>Código</span><input name="id" maxlength="90" placeholder="Gerado automaticamente"></label><label><span>Ordem</span><input name="sortOrder" type="number" min="0" step="1"></label><label><span>Linha *</span><select name="line" required><option>Slim</option><option>Plus Size</option><option>Juvenil</option></select></label><label><span>Categoria *</span><select name="category" required><option value="camisas">Camisas</option><option value="polos">Polos</option><option value="sociais">Sociais</option><option value="dry-fit">Dry-Fit</option><option value="shorts">Shorts e bermudas</option><option value="calcas">Calças</option><option value="manga-longa">Manga longa</option><option value="outros">Outros</option></select></label><label><span>Preço varejo (R$)</span><input name="retail" type="number" min="0" step="0.01" inputmode="decimal"></label><label><span>Preço atacado (R$)</span><input name="wholesale" type="number" min="0" step="0.01" inputmode="decimal"></label><label class="full"><span>Tamanhos <small>(separados por vírgula)</small></span><input name="sizes" placeholder="P, M, G, GG"></label><label class="full"><span>Observação de venda</span><textarea name="note" rows="3" maxlength="280" placeholder="Ex.: kit com 3 peças"></textarea></label><label class="switch-field full"><span><b>Produto visível</b><small>Exibir esta peça no catálogo público</small></span><input name="active" type="checkbox" checked><i></i></label></div></section></div>
+      <footer><button class="danger-link" type="button" data-delete-product hidden>Excluir produto</button><span></span><button class="secondary-button" type="button" data-editor-close>Cancelar</button><button class="primary-button" type="submit">Salvar produto</button></footer>
+    </form>
+  </dialog>
+
+  <div class="toast" data-admin-toast role="status" aria-live="polite"></div>
+  <script src="../catalogo/produtos.js"></script>
+  <script src="painel.js"></script>
+</body>
+</html>

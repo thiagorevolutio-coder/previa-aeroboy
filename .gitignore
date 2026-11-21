@@ -1,3 +1,6 @@
 aeroboy-mobile.png
 chrome-headless-profile*/
 *.tar.gz
+.dev.vars
+.wrangler/
+.tmp-server.mjs

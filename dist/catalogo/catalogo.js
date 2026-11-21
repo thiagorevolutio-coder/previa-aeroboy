@@ -1,14 +1,33 @@
 (() => {
   'use strict';
 
-  const products = Array.isArray(window.AEROBOY_PRODUCTS) ? window.AEROBOY_PRODUCTS : [];
-  const units = {
+  let products = Array.isArray(window.AEROBOY_PRODUCTS) ? window.AEROBOY_PRODUCTS : [];
+  let units = {
     centro1: { name: 'Centro Fashion — Loja 1', phone: '5585985009803' },
     centro2: { name: 'Centro Fashion — Loja 2', phone: '5585996858724' },
     shopping: { name: 'Shopping Central', phone: '5585997018084' },
     jangurussu: { name: 'Jangurussu — Loja 5', phone: '5585994261652' },
     planalto: { name: 'Planalto Ayrton Senna', phone: '5585997018084' }
   };
+
+  async function loadOnlineCatalog() {
+    try {
+      const [productsResponse, settingsResponse] = await Promise.all([
+        fetch('../api/public/products', { headers: { accept: 'application/json' } }),
+        fetch('../api/public/settings', { headers: { accept: 'application/json' } })
+      ]);
+      if (productsResponse.ok) {
+        const data = await productsResponse.json();
+        if (Array.isArray(data.products) && data.products.length) products = data.products;
+      }
+      if (settingsResponse.ok) {
+        const data = await settingsResponse.json();
+        if (Array.isArray(data.units) && data.units.length) units = Object.fromEntries(data.units.map(unit => [unit.id, { name: unit.name, phone: unit.phone }]));
+      }
+    } catch (_) {
+      // O catálogo estático permanece disponível caso o banco esteja temporariamente offline.
+    }
+  }
 
   const state = {
     mode: localStorage.getItem('aeroboy-mode') === 'wholesale' ? 'wholesale' : 'retail',
@@ -290,7 +309,7 @@
     $('[data-message-preview]').textContent = buildMessage();
   }
 
-  function checkout(event) {
+  async function checkout(event) {
     event.preventDefault();
     if (!state.cart.length) {
       showToast('Adicione pelo menos um produto');
@@ -302,6 +321,22 @@
     const values = formValues();
     const unit = units[values.unit];
     if (!unit) return;
+    const details = cartDetails();
+    const totals = cartTotals();
+    try {
+      await fetch('../api/public/orders', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({
+          customerName: clean(values.customerName), mode: state.mode, unitId: values.unit,
+          payment: clean(values.payment), delivery: clean(values.delivery), notes: clean(values.notes),
+          itemCount: totals.count, total: totals.total,
+          items: details.map(item => ({ productId: item.productId, name: item.product.name, size: item.size, color: item.color, quantity: item.quantity, unitPrice: priceOf(item.product) }))
+        })
+      });
+    } catch (_) {
+      // O WhatsApp continua funcionando mesmo se o registro administrativo falhar.
+    }
     const url = `https://wa.me/${unit.phone}?text=${encodeURIComponent(buildMessage())}`;
     window.open(url, '_blank', 'noopener');
   }
@@ -376,6 +411,11 @@
   document.addEventListener('keydown', event => { if (event.key === 'Escape' && cartDrawer.classList.contains('open')) closeCart(); });
   $$('[data-year]').forEach(node => node.textContent = new Date().getFullYear());
 
-  setMode(state.mode);
-  renderCart();
+  async function initialize() {
+    await loadOnlineCatalog();
+    setMode(state.mode);
+    renderCart();
+  }
+
+  initialize();
 })();
